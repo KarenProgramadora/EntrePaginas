@@ -1,0 +1,42 @@
+<div class="page-header">
+  <h1>Autores</h1>
+  <button mat-raised-button color="primary" (click)="openCreate()"><mat-icon>add</mat-icon> Nuevo autor</button>
+</div>
+
+@if (showForm) {
+  <mat-card style="margin-bottom:20px">
+    <mat-card-header><mat-card-title>{{ editingId ? 'Editar' : 'Nuevo' }} autor</mat-card-title></mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="form">
+        <div class="form-grid">
+          <mat-form-field><mat-label>Nombre</mat-label><input matInput formControlName="firstName"></mat-form-field>
+          <mat-form-field><mat-label>Apellido</mat-label><input matInput formControlName="lastName"></mat-form-field>
+          <mat-form-field><mat-label>Nacionalidad</mat-label><input matInput formControlName="nationality"></mat-form-field>
+          <mat-form-field><mat-label>Fecha de nacimiento</mat-label><input matInput type="date" formControlName="birthDate"></mat-form-field>
+          <mat-form-field style="grid-column:span 2"><mat-label>Biografía</mat-label><textarea matInput rows="3" formControlName="biography"></textarea></mat-form-field>
+        </div>
+      </form>
+    </mat-card-content>
+    <mat-card-actions class="form-actions">
+      <button mat-button (click)="cancel()">Cancelar</button>
+      <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid">Guardar</button>
+    </mat-card-actions>
+  </mat-card>
+}
+
+<mat-card><mat-card-content>
+  <table mat-table [dataSource]="authors">
+    <ng-container matColumnDef="fullName"><th mat-header-cell *matHeaderCellDef>Nombre</th><td mat-cell *matCellDef="let a">{{ a.fullName }}</td></ng-container>
+    <ng-container matColumnDef="nationality"><th mat-header-cell *matHeaderCellDef>Nacionalidad</th><td mat-cell *matCellDef="let a">{{ a.nationality }}</td></ng-container>
+    <ng-container matColumnDef="birthDate"><th mat-header-cell *matHeaderCellDef>Nacimiento</th><td mat-cell *matCellDef="let a">{{ a.birthDate | date:'dd/MM/yyyy' }}</td></ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let a">
+        <button mat-icon-button (click)="openEdit(a)"><mat-icon>edit</mat-icon></button>
+        <button mat-icon-button color="warn" (click)="delete(a.id)"><mat-icon>delete</mat-icon></button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</mat-card-content></mat-card>

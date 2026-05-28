@@ -1,0 +1,68 @@
+<div class="page-header">
+  <h1>Libros</h1>
+  <button mat-raised-button color="primary" (click)="openCreate()">
+    <mat-icon>add</mat-icon> Nuevo libro
+  </button>
+</div>
+
+@if (showForm) {
+  <mat-card style="margin-bottom:20px">
+    <mat-card-header><mat-card-title>{{ editingId ? 'Editar' : 'Nuevo' }} libro</mat-card-title></mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="form">
+        <div class="form-grid">
+          <mat-form-field><mat-label>Título</mat-label><input matInput formControlName="title"></mat-form-field>
+          <mat-form-field><mat-label>ISBN</mat-label><input matInput formControlName="isbn"></mat-form-field>
+          <mat-form-field><mat-label>Año de publicación</mat-label><input matInput type="number" formControlName="publicationYear"></mat-form-field>
+          <mat-form-field><mat-label>Total copias</mat-label><input matInput type="number" formControlName="totalCopies"></mat-form-field>
+          <mat-form-field><mat-label>Copias disponibles</mat-label><input matInput type="number" formControlName="availableCopies"></mat-form-field>
+          <mat-form-field><mat-label>Condición</mat-label>
+            <mat-select formControlName="condition">
+              @for (c of conditions; track c.value) { <mat-option [value]="c.value">{{ c.label }}</mat-option> }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field><mat-label>Categoría</mat-label>
+            <mat-select formControlName="categoryId">
+              @for (c of categories; track c.id) { <mat-option [value]="c.id">{{ c.name }}</mat-option> }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field><mat-label>Editorial</mat-label>
+            <mat-select formControlName="publisherId">
+              @for (p of publishers; track p.id) { <mat-option [value]="p.id">{{ p.name }}</mat-option> }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field style="grid-column:span 2"><mat-label>URL portada (opcional)</mat-label><input matInput formControlName="coverUrl"></mat-form-field>
+        </div>
+      </form>
+    </mat-card-content>
+    <mat-card-actions class="form-actions">
+      <button mat-button (click)="cancel()">Cancelar</button>
+      <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid">Guardar</button>
+    </mat-card-actions>
+  </mat-card>
+}
+
+<mat-card><mat-card-content>
+  <table mat-table [dataSource]="books">
+    <ng-container matColumnDef="title"><th mat-header-cell *matHeaderCellDef>Título</th><td mat-cell *matCellDef="let b">{{ b.title }}</td></ng-container>
+    <ng-container matColumnDef="isbn"><th mat-header-cell *matHeaderCellDef>ISBN</th><td mat-cell *matCellDef="let b">{{ b.isbn }}</td></ng-container>
+    <ng-container matColumnDef="categoryName"><th mat-header-cell *matHeaderCellDef>Categoría</th><td mat-cell *matCellDef="let b">{{ b.categoryName }}</td></ng-container>
+    <ng-container matColumnDef="publisherName"><th mat-header-cell *matHeaderCellDef>Editorial</th><td mat-cell *matCellDef="let b">{{ b.publisherName }}</td></ng-container>
+    <ng-container matColumnDef="availableCopies">
+      <th mat-header-cell *matHeaderCellDef>Disponibles</th>
+      <td mat-cell *matCellDef="let b">
+        <span [class]="b.availableCopies > 0 ? 'available' : 'unavailable'">{{ b.availableCopies }} / {{ b.totalCopies }}</span>
+      </td>
+    </ng-container>
+    <ng-container matColumnDef="conditionName"><th mat-header-cell *matHeaderCellDef>Condición</th><td mat-cell *matCellDef="let b">{{ b.conditionName }}</td></ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let b">
+        <button mat-icon-button (click)="openEdit(b)"><mat-icon>edit</mat-icon></button>
+        <button mat-icon-button color="warn" (click)="delete(b.id)"><mat-icon>delete</mat-icon></button>
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</mat-card-content></mat-card>
