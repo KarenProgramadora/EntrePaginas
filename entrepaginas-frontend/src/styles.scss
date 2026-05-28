@@ -1,0 +1,79 @@
+@use '@angular/material' as mat;
+
+html {
+  height: 100%;
+  @include mat.theme(
+    (
+      color: (
+        primary: mat.$azure-palette,
+        tertiary: mat.$blue-palette,
+      ),
+      typography: Roboto,
+      density: 0,
+    )
+  );
+}
+
+body {
+  color-scheme: light;
+  background-color: #f0f2f5;
+  color: #1c1b1f;
+  font: var(--mat-sys-body-medium);
+  margin: 0;
+  height: 100%;
+}
+
+// Tarjetas con sombra ligera
+mat-card {
+  box-shadow: 0 1px 3px rgba(0,0,0,0.12), 0 1px 2px rgba(0,0,0,0.08) !important;
+  border-radius: 12px !important;
+}
+
+// Tablas más limpias
+.mat-mdc-table {
+  background: transparent !important;
+
+  .mat-mdc-header-cell {
+    font-weight: 700 !important;
+    color: #1a237e !important;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    border-bottom: 2px solid #e0e0e0 !important;
+  }
+
+  .mat-mdc-cell {
+    color: #212121 !important;
+    font-size: 0.875rem;
+    border-bottom-color: #f0f0f0 !important;
+  }
+
+  .mat-mdc-row:hover .mat-mdc-cell {
+    background: #f5f7ff !important;
+  }
+}
+
+// Chips de estado visibles
+.chip-active {
+  background-color: #e8f5e9 !important;
+  color: #2e7d32 !important;
+  font-weight: 600;
+}
+
+.chip-suspended {
+  background-color: #fff3e0 !important;
+  color: #e65100 !important;
+  font-weight: 600;
+}
+
+.chip-expired {
+  background-color: #fce4ec !important;
+  color: #c62828 !important;
+  font-weight: 600;
+}
+
+// Botón primary
+.mat-mdc-raised-button.mat-primary {
+  background-color: #1a237e !important;
+  color: #ffffff !important;
+}
