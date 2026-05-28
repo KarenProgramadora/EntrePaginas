@@ -1,0 +1,57 @@
+<div class="page-header">
+  <h1>Préstamos</h1>
+  <div style="display:flex;gap:8px">
+    <button mat-stroked-button (click)="markOverdue()"><mat-icon>update</mat-icon> Marcar vencidos</button>
+    <button mat-raised-button color="primary" (click)="openCreate()"><mat-icon>add</mat-icon> Nuevo préstamo</button>
+  </div>
+</div>
+
+@if (showForm) {
+  <mat-card style="margin-bottom:20px">
+    <mat-card-header><mat-card-title>Nuevo préstamo</mat-card-title></mat-card-header>
+    <mat-card-content>
+      <form [formGroup]="form">
+        <div class="form-grid">
+          <mat-form-field><mat-label>Miembro activo</mat-label>
+            <mat-select formControlName="memberId">
+              @for (m of members; track m.id) { <mat-option [value]="m.id">{{ m.fullName }}</mat-option> }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field><mat-label>Libro disponible</mat-label>
+            <mat-select formControlName="bookId">
+              @for (b of books; track b.id) { <mat-option [value]="b.id">{{ b.title }} ({{ b.availableCopies }} disp.)</mat-option> }
+            </mat-select>
+          </mat-form-field>
+          <mat-form-field><mat-label>Días de préstamo (1-30)</mat-label><input matInput type="number" formControlName="loanDays"></mat-form-field>
+        </div>
+      </form>
+    </mat-card-content>
+    <mat-card-actions class="form-actions">
+      <button mat-button (click)="cancel()">Cancelar</button>
+      <button mat-raised-button color="primary" (click)="save()" [disabled]="form.invalid">Crear préstamo</button>
+    </mat-card-actions>
+  </mat-card>
+}
+
+<mat-card><mat-card-content>
+  <table mat-table [dataSource]="loans">
+    <ng-container matColumnDef="bookTitle"><th mat-header-cell *matHeaderCellDef>Libro</th><td mat-cell *matCellDef="let l">{{ l.bookTitle }}</td></ng-container>
+    <ng-container matColumnDef="memberFullName"><th mat-header-cell *matHeaderCellDef>Miembro</th><td mat-cell *matCellDef="let l">{{ l.memberFullName }}</td></ng-container>
+    <ng-container matColumnDef="loanDate"><th mat-header-cell *matHeaderCellDef>Préstamo</th><td mat-cell *matCellDef="let l">{{ l.loanDate | date:'dd/MM/yyyy' }}</td></ng-container>
+    <ng-container matColumnDef="dueDate"><th mat-header-cell *matHeaderCellDef>Vence</th><td mat-cell *matCellDef="let l">{{ l.dueDate | date:'dd/MM/yyyy' }}</td></ng-container>
+    <ng-container matColumnDef="statusName">
+      <th mat-header-cell *matHeaderCellDef>Estado</th>
+      <td mat-cell *matCellDef="let l"><span [class]="chipClass(l.status)">{{ l.statusName }}</span></td>
+    </ng-container>
+    <ng-container matColumnDef="actions">
+      <th mat-header-cell *matHeaderCellDef></th>
+      <td mat-cell *matCellDef="let l">
+        @if (l.status !== 1) {
+          <button mat-icon-button color="primary" (click)="return(l.id)" title="Devolver"><mat-icon>assignment_return</mat-icon></button>
+        }
+      </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+  </table>
+</mat-card-content></mat-card>
