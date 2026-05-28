@@ -1,0 +1,80 @@
+<h1>Dashboard</h1>
+
+@if (stats) {
+  <div class="stats-grid">
+    <mat-card class="stat-card"><mat-card-content>
+      <div class="stat-value">{{ stats.totalBooks }}</div>
+      <div class="stat-label">Libros</div>
+    </mat-card-content></mat-card>
+    <mat-card class="stat-card"><mat-card-content>
+      <div class="stat-value">{{ stats.totalAvailableCopies }}</div>
+      <div class="stat-label">Copias disponibles</div>
+    </mat-card-content></mat-card>
+    <mat-card class="stat-card"><mat-card-content>
+      <div class="stat-value">{{ stats.totalAuthors }}</div>
+      <div class="stat-label">Autores</div>
+    </mat-card-content></mat-card>
+    <mat-card class="stat-card"><mat-card-content>
+      <div class="stat-value">{{ stats.activeMembers }}</div>
+      <div class="stat-label">Miembros activos</div>
+    </mat-card-content></mat-card>
+    <mat-card class="stat-card"><mat-card-content>
+      <div class="stat-value">{{ stats.activeLoans }}</div>
+      <div class="stat-label">Préstamos activos</div>
+    </mat-card-content></mat-card>
+    <mat-card class="stat-card"><mat-card-content>
+      <div class="stat-value" style="color:#c62828">{{ stats.overdueLoans }}</div>
+      <div class="stat-label">Préstamos vencidos</div>
+    </mat-card-content></mat-card>
+    <mat-card class="stat-card"><mat-card-content>
+      <div class="stat-value" style="color:#e65100">{{ stats.unpaidFines }}</div>
+      <div class="stat-label">Multas pendientes</div>
+    </mat-card-content></mat-card>
+  </div>
+}
+
+<div class="tables-grid">
+  <mat-card>
+    <mat-card-content>
+      <h2>Libros por categoría</h2>
+      <table mat-table [dataSource]="byCategory">
+        <ng-container matColumnDef="categoryName">
+          <th mat-header-cell *matHeaderCellDef>Categoría</th>
+          <td mat-cell *matCellDef="let r">{{ r.categoryName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="bookCount">
+          <th mat-header-cell *matHeaderCellDef>Títulos</th>
+          <td mat-cell *matCellDef="let r">{{ r.bookCount }}</td>
+        </ng-container>
+        <ng-container matColumnDef="availableCopies">
+          <th mat-header-cell *matHeaderCellDef>Disponibles</th>
+          <td mat-cell *matCellDef="let r">{{ r.availableCopies }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="categoryColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: categoryColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+
+  <mat-card>
+    <mat-card-content>
+      <h2>Libros más prestados</h2>
+      <table mat-table [dataSource]="mostLoaned">
+        <ng-container matColumnDef="title">
+          <th mat-header-cell *matHeaderCellDef>Título</th>
+          <td mat-cell *matCellDef="let r">{{ r.title }}</td>
+        </ng-container>
+        <ng-container matColumnDef="authorName">
+          <th mat-header-cell *matHeaderCellDef>Autor</th>
+          <td mat-cell *matCellDef="let r">{{ r.authorName }}</td>
+        </ng-container>
+        <ng-container matColumnDef="loanCount">
+          <th mat-header-cell *matHeaderCellDef>Préstamos</th>
+          <td mat-cell *matCellDef="let r">{{ r.loanCount }}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="loanedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: loanedColumns;"></tr>
+      </table>
+    </mat-card-content>
+  </mat-card>
+</div>
