@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="EntrePaginas.API/EntrePaginas.API.csproj" />
+  <Project Path="EntrePaginas.DataAccess/EntrePaginas.DataAccess.csproj" />
+  <Project Path="EntrePaginas.Domain/EntrePaginas.Domain.csproj" />
+</Solution>
