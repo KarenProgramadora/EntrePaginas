@@ -3,6 +3,7 @@ using EntrePaginas.API.DTOs.Request;
 using EntrePaginas.API.DTOs.Response;
 using EntrePaginas.Domain.Entities;
 using EntrePaginas.Domain.Enums;
+using EntrePaginas.Domain.Interfaces.Repositories;
 
 namespace EntrePaginas.API.Mappings;
 
@@ -60,6 +61,13 @@ public class MappingProfile : Profile
                 opt => opt.MapFrom(src =>
                     src.Status == LoanStatus.Overdue ||
                     (src.Status == LoanStatus.Active && src.DueDate < DateTime.UtcNow)));
+
+        // Reports — mapeo desde records crudos del repo hacia DTOs de respuesta
+        CreateMap<LibraryStatsRaw, LibraryStatsDTO>();
+        CreateMap<BooksByCategoryRaw, BooksByCategoryDTO>();
+        CreateMap<MostLoanedBookRaw, MostLoanedBookDTO>();
+        CreateMap<MemberActivityRaw, MemberActivityDTO>();
+        CreateMap<LoanDueSoonRaw, LoanDueSoonDTO>();
     }
 
     private static string ToConditionName(BookCondition c) => c switch

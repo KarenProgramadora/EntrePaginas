@@ -1,12 +1,13 @@
 using AutoMapper;
 using EntrePaginas.API.DTOs.Request;
 using EntrePaginas.API.DTOs.Response;
+using EntrePaginas.Domain.Entities;
 using EntrePaginas.Domain.Interfaces.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace EntrePaginas.API.Controllers;
 
-[ApiController]
+[ApiController] //DataAnnottations para validar el modelo, si el modelo no es valido, se devuelve un 400 Bad Request con los errores de validación
 [Route("api/[controller]")]
 public class BookController : ControllerBase
 {
@@ -46,7 +47,7 @@ public class BookController : ControllerBase
     {
         try
         {
-            var book = _mapper.Map<EntrePaginas.Domain.Entities.Book>(dto);
+            var book = _mapper.Map<Book>(dto);
             var created = await _service.CreateAsync(book);
             return CreatedAtAction(nameof(GetById), new { id = created.Id },
                 _mapper.Map<BookResponseDTO>(created));
@@ -62,7 +63,7 @@ public class BookController : ControllerBase
     {
         try
         {
-            var book = _mapper.Map<EntrePaginas.Domain.Entities.Book>(dto);
+            var book = _mapper.Map<Book>(dto);
             await _service.UpdateAsync(id, book);
             return NoContent();
         }
