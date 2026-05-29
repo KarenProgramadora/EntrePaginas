@@ -1,5 +1,6 @@
 using EntrePaginas.Domain.Entities;
 using EntrePaginas.Domain.Enums;
+using EntrePaginas.Domain.Helper;
 using EntrePaginas.Domain.Interfaces.Repositories;
 using EntrePaginas.Domain.Interfaces.Services;
 using Microsoft.Extensions.Logging;
@@ -10,18 +11,18 @@ public class LoanService : ILoanService
 {
     private readonly ILoanRepository _loanRepository;
     private readonly IBookRepository _bookRepository;
-    private readonly IMemberRepository _memberRepository;
+    private readonly LoanValidationHelper _validationHelper;
     private readonly ILogger<LoanService> _logger;
 
     public LoanService(
         ILoanRepository loanRepository,
         IBookRepository bookRepository,
-        IMemberRepository memberRepository,
+        LoanValidationHelper validationHelper,
         ILogger<LoanService> logger)
     {
         _loanRepository = loanRepository;
         _bookRepository = bookRepository;
-        _memberRepository = memberRepository;
+        _validationHelper = validationHelper;
         _logger = logger;
     }
 
@@ -57,35 +58,12 @@ public class LoanService : ILoanService
 
     public async Task<Loan> CreateLoanAsync(int memberId, int bookId, int loanDays)
     {
-        // Validar que el miembro existe y está activo
-        var member = await _memberRepository.GetByIdAsync(memberId);
-        if (member == null)
-            throw new KeyNotFoundException($"No se encontró el miembro con ID {memberId}");
+        // Validaciones delegadas al helper (patrón análogo a MatchValidationHelper)
+        LoanValidationHelper.ValidateLoanDays(loanDays);
+        await _validationHelper.ValidateActiveMemberAsync(memberId);
+        var book = await _validationHelper.ValidateAvailableBookAsync(bookId);
+        await _validationHelper.ValidateNoDuplicateActiveLoanAsync(memberId, bookId, book.Title);
 
-        if (member.Status != MemberStatus.Active)
-            throw new InvalidOperationException(
-                $"El miembro '{member.FirstName} {member.LastName}' no puede tomar préstamos (estado: {member.Status})");
-
-        // Validar que el libro existe y tiene copias disponibles
-        var book = await _bookRepository.GetByIdAsync(bookId);
-        if (book == null)
-            throw new KeyNotFoundException($"No se encontró el libro con ID {bookId}");
-
-        if (book.AvailableCopies <= 0)
-            throw new InvalidOperationException(
-                $"El libro '{book.Title}' no tiene copias disponibles");
-
-        // Validar que el miembro no ya tiene ese libro en préstamo activo
-        var hasActive = await _loanRepository.HasActiveLoanForBookAsync(memberId, bookId);
-        if (hasActive)
-            throw new InvalidOperationException(
-                $"El miembro ya tiene un préstamo activo de '{book.Title}'");
-
-        // Validar rango de días
-        if (loanDays < 1 || loanDays > 30)
-            throw new InvalidOperationException("El plazo del préstamo debe estar entre 1 y 30 días");
-
-        // Crear préstamo
         var loan = new Loan
         {
             MemberId = memberId,
