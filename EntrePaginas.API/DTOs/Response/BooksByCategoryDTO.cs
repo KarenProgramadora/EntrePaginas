@@ -1,4 +1,4 @@
-namespace EntrePaginas.API.DTOs.Response.Reports;
+namespace EntrePaginas.API.DTOs.Response;
 
 public class BooksByCategoryDTO
 {

@@ -49,7 +49,7 @@ public class LoanController : ControllerBase
     }
 
     [HttpPost]
-    public async Task<ActionResult<LoanResponseDTO>> Create([FromBody] LoanRequestDTO dto)
+    public async Task<ActionResult<LoanResponseDTO>> Create([FromBody] CreateLoanRequestDTO dto)
     {
         try
         {

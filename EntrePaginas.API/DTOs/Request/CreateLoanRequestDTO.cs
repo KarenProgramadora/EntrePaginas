@@ -1,6 +1,6 @@
 namespace EntrePaginas.API.DTOs.Request;
 
-public class LoanRequestDTO
+public class CreateLoanRequestDTO
 {
     public int MemberId { get; set; }
     public int BookId { get; set; }
