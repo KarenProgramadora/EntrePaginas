@@ -2,39 +2,28 @@ using EntrePaginas.DataAccess.Context;
 using EntrePaginas.Domain.Entities;
 using EntrePaginas.Domain.Enums;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace EntrePaginas.DataAccess.Seeders;
 
-public class DataSeeder
+public static class DataSeeder
 {
-    private readonly EntrePaginasDbContext _context;
-    private readonly ILogger<DataSeeder> _logger;
-
-    public DataSeeder(EntrePaginasDbContext context, ILogger<DataSeeder> logger)
+    public static async Task SeedAsync(EntrePaginasDbContext context)
     {
-        _context = context;
-        _logger = logger;
-    }
+        // Si ya hay categorías asumimos que la BD ya está poblada
+        if (await context.Categories.AnyAsync()) return;
 
-    public async Task SeedAsync()
-    {
-        _logger.LogInformation("Starting database seeding...");
-
-        await SeedCategoriesAsync();
-        await SeedPublishersAsync();
-        await SeedAuthorsAsync();
-        await SeedBooksAsync();
-        await SeedMembersAsync();
-
-        _logger.LogInformation("Database seeding completed.");
+        await SeedCategoriesAsync(context);
+        await SeedPublishersAsync(context);
+        await SeedAuthorsAsync(context);
+        await SeedBooksAsync(context);
+        await SeedMembersAsync(context);
     }
 
     // ------------------------------------------------------------------ //
 
-    private async Task SeedCategoriesAsync()
+    private static async Task SeedCategoriesAsync(EntrePaginasDbContext context)
     {
-        if (await _context.Categories.AnyAsync()) return;
+        if (await context.Categories.AnyAsync()) return;
 
         var categories = new List<Category>
         {
@@ -48,14 +37,13 @@ public class DataSeeder
             new() { Name = "Infantil y Juvenil",  Description = "Literatura dirigida a niños y jóvenes" },
         };
 
-        _context.Categories.AddRange(categories);
-        await _context.SaveChangesAsync();
-        _logger.LogInformation("Seeded {Count} categories", categories.Count);
+        context.Categories.AddRange(categories);
+        await context.SaveChangesAsync();
     }
 
-    private async Task SeedPublishersAsync()
+    private static async Task SeedPublishersAsync(EntrePaginasDbContext context)
     {
-        if (await _context.Publishers.AnyAsync()) return;
+        if (await context.Publishers.AnyAsync()) return;
 
         var publishers = new List<Publisher>
         {
@@ -67,14 +55,13 @@ public class DataSeeder
             new() { Name = "Anagrama",        Country = "España",    Email = "info@anagrama-ed.es",    Website = "https://www.anagrama-ed.es" },
         };
 
-        _context.Publishers.AddRange(publishers);
-        await _context.SaveChangesAsync();
-        _logger.LogInformation("Seeded {Count} publishers", publishers.Count);
+        context.Publishers.AddRange(publishers);
+        await context.SaveChangesAsync();
     }
 
-    private async Task SeedAuthorsAsync()
+    private static async Task SeedAuthorsAsync(EntrePaginasDbContext context)
     {
-        if (await _context.Authors.AnyAsync()) return;
+        if (await context.Authors.AnyAsync()) return;
 
         var authors = new List<Author>
         {
@@ -144,18 +131,17 @@ public class DataSeeder
             },
         };
 
-        _context.Authors.AddRange(authors);
-        await _context.SaveChangesAsync();
-        _logger.LogInformation("Seeded {Count} authors", authors.Count);
+        context.Authors.AddRange(authors);
+        await context.SaveChangesAsync();
     }
 
-    private async Task SeedBooksAsync()
+    private static async Task SeedBooksAsync(EntrePaginasDbContext context)
     {
-        if (await _context.Books.AnyAsync()) return;
+        if (await context.Books.AnyAsync()) return;
 
-        var categories  = await _context.Categories.ToListAsync();
-        var publishers  = await _context.Publishers.ToListAsync();
-        var authors     = await _context.Authors.ToListAsync();
+        var categories  = await context.Categories.ToListAsync();
+        var publishers  = await context.Publishers.ToListAsync();
+        var authors     = await context.Authors.ToListAsync();
 
         int catNovela   = categories.First(c => c.Name == "Novela").Id;
         int catCuento   = categories.First(c => c.Name == "Cuento").Id;
@@ -316,23 +302,22 @@ public class DataSeeder
 
         foreach (var (book, authorId) in books)
         {
-            _context.Books.Add(book);
-            await _context.SaveChangesAsync();
+            context.Books.Add(book);
+            await context.SaveChangesAsync();
 
-            _context.BookAuthors.Add(new BookAuthor
+            context.BookAuthors.Add(new BookAuthor
             {
                 BookId = book.Id,
                 AuthorId = authorId
             });
         }
 
-        await _context.SaveChangesAsync();
-        _logger.LogInformation("Seeded {Count} books", books.Count);
+        await context.SaveChangesAsync();
     }
 
-    private async Task SeedMembersAsync()
+    private static async Task SeedMembersAsync(EntrePaginasDbContext context)
     {
-        if (await _context.Members.AnyAsync()) return;
+        if (await context.Members.AnyAsync()) return;
 
         var members = new List<Member>
         {
@@ -410,8 +395,7 @@ public class DataSeeder
             },
         };
 
-        _context.Members.AddRange(members);
-        await _context.SaveChangesAsync();
-        _logger.LogInformation("Seeded {Count} members", members.Count);
+        context.Members.AddRange(members);
+        await context.SaveChangesAsync();
     }
 }
