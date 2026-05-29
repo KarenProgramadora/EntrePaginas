@@ -1,25 +1,13 @@
 <mat-sidenav-container class="sidenav-container">
   <mat-sidenav mode="side" opened class="sidenav">
-    <div class="sidenav-header">
-      <mat-icon>local_library</mat-icon>
-      <span>Entre Páginas</span>
-    </div>
-    <mat-nav-list>
-      @for (item of navItems; track item.route) {
-        <a mat-list-item [routerLink]="item.route" routerLinkActive="active-link">
-          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-          <span matListItemTitle>{{ item.label }}</span>
-        </a>
-      }
-    </mat-nav-list>
+    <app-sidebar />
   </mat-sidenav>
 
   <mat-sidenav-content class="main-content">
-    <mat-toolbar color="primary">
-      <span>{{ title }}</span>
-    </mat-toolbar>
+    <app-navbar [title]="title" />
     <div class="content-area">
       <router-outlet />
     </div>
+    <app-footer />
   </mat-sidenav-content>
 </mat-sidenav-container>

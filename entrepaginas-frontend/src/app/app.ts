@@ -1,29 +1,16 @@
 import { Component } from '@angular/core';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { MatToolbarModule } from '@angular/material/toolbar';
+import { RouterOutlet } from '@angular/router';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
+import { Sidebar } from './layout/sidebar/sidebar';
+import { Navbar } from './layout/navbar/navbar';
+import { Footer } from './layout/footer/footer';
 
 @Component({
   selector: 'app-root',
-  imports: [
-    RouterOutlet, RouterLink, RouterLinkActive,
-    MatToolbarModule, MatSidenavModule, MatListModule,
-    MatIconModule, MatButtonModule
-  ],
+  imports: [RouterOutlet, MatSidenavModule, Sidebar, Navbar, Footer],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App {
   title = 'Entre Páginas';
-
-  navItems = [
-    { label: 'Dashboard',  icon: 'dashboard',    route: '/dashboard' },
-    { label: 'Libros',     icon: 'menu_book',     route: '/books' },
-    { label: 'Autores',    icon: 'person',        route: '/authors' },
-    { label: 'Miembros',   icon: 'people',        route: '/members' },
-    { label: 'Préstamos',  icon: 'swap_horiz',    route: '/loans' },
-  ];
 }

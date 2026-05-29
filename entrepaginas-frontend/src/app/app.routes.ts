@@ -1,9 +1,9 @@
 import { Routes } from '@angular/router';
-import { Dashboard } from './pages/dashboard/dashboard';
-import { Books } from './pages/books/books';
-import { Authors } from './pages/authors/authors';
-import { Members } from './pages/members/members';
-import { Loans } from './pages/loans/loans';
+import { Dashboard } from './features/dashboard/dashboard';
+import { Books } from './features/books/books';
+import { Authors } from './features/authors/authors';
+import { Members } from './features/members/members';
+import { Loans } from './features/loans/loans';
 
 export const routes: Routes = [
   { path: '',          redirectTo: 'dashboard', pathMatch: 'full' },
